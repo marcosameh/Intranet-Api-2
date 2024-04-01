@@ -1,4 +1,3 @@
-using App.Application.Infrastructure;
 using FluentValidation;
 using MediatR;
 using System.Collections.Generic;
@@ -6,11 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace App.Application.ValidationBehaviors
+namespace App.Application.Infrastructure
 {
     public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-     where TRequest : IRequest<TResponse>
-     where TResponse : Result<TResponse>, new()
+        where TRequest : IRequest<TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -19,28 +17,22 @@ namespace App.Application.ValidationBehaviors
             _validators = validators;
         }
 
-
-
-        public async Task<TResponse> Handle(TRequest request,  RequestHandlerDelegate<TResponse> next ,CancellationToken cancellationToken)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            var failures = _validators
-                .Select(v => v.Validate(request))
+            var context = new ValidationContext<TRequest>(request);
+
+            var validationFailures = _validators
+                .Select(v => v.Validate(context))
                 .SelectMany(result => result.Errors)
-                .Where(error => error != null)
+                .Where(failure => failure != null)
                 .ToList();
 
-            if (failures.Any())
+            if (validationFailures.Any())
             {
-                var result = new TResponse();
-                result.IsSuccess = false;
-                result.Error = string.Join(", ", failures.Select(x => x.ErrorMessage));
-                return await Task.FromResult(result); // Wrap result with Task.FromResult()
+                throw new ValidationException(validationFailures);
             }
 
             return await next();
         }
-
-       
     }
-
 }

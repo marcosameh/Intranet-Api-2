@@ -1,6 +1,4 @@
 ﻿using App.Application.Infrastructure;
-using App.Application.ValidationBehaviors;
-using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

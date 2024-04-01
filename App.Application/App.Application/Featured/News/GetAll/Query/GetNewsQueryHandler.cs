@@ -2,6 +2,7 @@
 using App.Application.Infrastructure;
 using App.Domain.DBGeneratedModel;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -43,9 +44,14 @@ namespace App.Application.Featured.News.GetAll.Query
 
 
                 var result = _mapper.Map<List<NewsDTO>>(news);
-                NewsWithCount.News=result;
-                NewsWithCount.NewsCount= news.Count;
+                NewsWithCount.News = result;
+                NewsWithCount.NewsCount = news.Count;
                 return Result.Ok(NewsWithCount);
+
+            }
+            catch (ValidationException ex)
+            {
+                return Result.Fail<NewsWithCount>(string.Join(", ", ex.Errors));
             }
             catch (Exception ex)
             {
