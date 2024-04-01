@@ -6,8 +6,8 @@ namespace App.Application.Featured.News.GetAll.Query
     {
         public GetNewsQueryValidator()
         {
-            RuleFor(x=>x.pageNumber).NotEmpty();
-            RuleFor(x=>x.pageSize).NotEmpty();
+            RuleFor(x=>x.pageNumber).NotEmpty().NotEqual(0);
+            RuleFor(x=>x.pageSize).NotEmpty().NotEqual(0);
 
         }
     }

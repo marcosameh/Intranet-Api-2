@@ -1,5 +1,7 @@
 using App.Application;
 using App.Domain;
+using FluentValidation;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 

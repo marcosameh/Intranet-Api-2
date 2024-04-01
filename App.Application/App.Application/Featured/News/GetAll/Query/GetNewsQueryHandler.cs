@@ -1,4 +1,5 @@
 ﻿using App.Application.Featured.News.GetAll.Data;
+using App.Application.Results;
 using App.Domain.DBGeneratedModel;
 using AutoMapper;
 using MediatR;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace App.Application.Featured.News.GetAll.Query
 {
-    public class GetNewsQueryHandler : IRequestHandler<GetNewsQuery, IEnumerable<NewsDTO>>
+    public class GetNewsQueryHandler : IRequestHandler<GetNewsQuery,Result<List<NewsDTO>>>
     {
         private readonly IntranetContext _context;
         private readonly IMapper _mapper;
@@ -22,29 +23,31 @@ namespace App.Application.Featured.News.GetAll.Query
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<NewsDTO>> Handle(GetNewsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<NewsDTO>>> Handle(GetNewsQuery request, CancellationToken cancellationToken)
         {
+            List<NewsDTO> result=new List<NewsDTO>();
             try
             {
-                var query = _context.News
+                var news = await _context.News
                     .Include(n => n.NewsType)
                     .Include(n => n.NewsAttachments)
-                    //.Where(n =>
-                    //    (string.IsNullOrEmpty(request.SearchName) ||
-                    //    n.Body.Contains(request.SearchName) ||
-                    //    n.Title.Contains(request.SearchName) ||
-                    //    n.NewsType.Name.Contains(request.SearchName)) &&
-                    //    (!request.NewsTypeId.HasValue || request.NewsTypeId == 0 || n.NewsTypeId == request.NewsTypeId))
+                    .Where(n =>
+                        (string.IsNullOrEmpty(request.SearchName) ||
+                        n.Body.Contains(request.SearchName) ||
+                        n.Title.Contains(request.SearchName) ||
+                        n.NewsType.Name.Contains(request.SearchName)) &&
+                        (!request.NewsTypeId.HasValue || request.NewsTypeId == 0 || n.NewsTypeId == request.NewsTypeId))
                     .OrderByDescending(n => n.Createdon)
                     .Skip((request.pageNumber - 1) * request.pageSize)
-                    .Take(request.pageSize);
+                    .Take(request.pageSize).ToListAsync();
 
-                var result = await query.ToListAsync(cancellationToken);
-                return _mapper.Map<IEnumerable<NewsDTO>>(result);
+               
+                result = _mapper.Map<List<NewsDTO>>(news);
+                return Result.Ok(result);
             }
             catch (Exception ex)
             {
-                throw new Exception("Unable to Get All News", ex);
+                return Result.Fail<List<NewsDTO>>(ex.Message +ex.InnerException?.Message);
             }
         }
     }
