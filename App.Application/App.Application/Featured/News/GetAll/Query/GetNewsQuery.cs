@@ -1,11 +1,11 @@
 ﻿using App.Application.Featured.News.GetAll.Data;
-using App.Application.Results;
+using App.Application.Infrastructure;
 using MediatR;
 using System.Collections.Generic;
 
 namespace App.Application.Featured.News.GetAll.Query
 {
-    public class GetNewsQuery : IRequest<Result<List<NewsDTO>>>
+    public class GetNewsQuery : IRequest<Result<NewsWithCount>>
     {
 
         public int pageNumber { get; set; }

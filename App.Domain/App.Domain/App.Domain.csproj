@@ -4,6 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="ApplicationContextPartial.cs" />
+    <Compile Remove="DatabaseOptions.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.2.0" />

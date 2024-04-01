@@ -1,5 +1,5 @@
 ﻿using App.Application.Featured.News.GetAll.Data;
-using App.Application.Results;
+using App.Application.Infrastructure;
 using App.Domain.DBGeneratedModel;
 using AutoMapper;
 using MediatR;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace App.Application.Featured.News.GetAll.Query
 {
-    public class GetNewsQueryHandler : IRequestHandler<GetNewsQuery,Result<List<NewsDTO>>>
+    public class GetNewsQueryHandler : IRequestHandler<GetNewsQuery,Result<NewsWithCount>>
     {
         private readonly IntranetContext _context;
         private readonly IMapper _mapper;
@@ -23,9 +23,9 @@ namespace App.Application.Featured.News.GetAll.Query
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Result<List<NewsDTO>>> Handle(GetNewsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<NewsWithCount>> Handle(GetNewsQuery request, CancellationToken cancellationToken)
         {
-            List<NewsDTO> result=new List<NewsDTO>();
+            var NewsWithCount=new NewsWithCount();
             try
             {
                 var news = await _context.News
@@ -41,13 +41,15 @@ namespace App.Application.Featured.News.GetAll.Query
                     .Skip((request.pageNumber - 1) * request.pageSize)
                     .Take(request.pageSize).ToListAsync();
 
-               
-                result = _mapper.Map<List<NewsDTO>>(news);
-                return Result.Ok(result);
+
+                var result = _mapper.Map<List<NewsDTO>>(news);
+                NewsWithCount.News=result;
+                NewsWithCount.NewsCount= news.Count;
+                return Result.Ok(NewsWithCount);
             }
             catch (Exception ex)
             {
-                return Result.Fail<List<NewsDTO>>(ex.Message +ex.InnerException?.Message);
+                return Result.Fail<NewsWithCount>(ex.Message + ex.InnerException?.Message);
             }
         }
     }

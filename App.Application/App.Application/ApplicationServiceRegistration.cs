@@ -1,4 +1,4 @@
-﻿using App.Application.Results;
+﻿using App.Application.Infrastructure;
 using App.Application.ValidationBehaviors;
 using AutoMapper;
 using FluentValidation;
@@ -14,9 +14,9 @@ namespace App.Application
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
         }
