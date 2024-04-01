@@ -1,0 +1,69 @@
+﻿@page
+@model App.UI.Pages.Users.IndexModel
+@{
+}
+
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>User List</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item">
+                            <a href="#">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Users</li>
+                    </ol>
+                </nav>
+                <div class="top-right-button-container">
+                    <a href="/Users/Create" class="btn btn-primary btn-lg top-right-button mr-1">ADD NEW</a>
+                </div>
+                <div class="separator mb-5"></div>
+            </div>
+
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="data-table data-table-feature">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr>
+                                        <td>@user.FirstName @user.LastName</td>
+                                        <td>@user.Email</td>
+                                        <td>@user.Roles</td>
+                                        <td>
+                                            <span class="badge badge-pill badge-@(user.Active ? "success" : "danger") mb-1">
+                                                @(user.Active ? "Active" : "Deactivated")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <a class="mr-4" href="/users/edit?Id=@user.Id"><div class="glyph-icon simple-icon-pencil h5"></div></a>
+                                                <a href="/users/delete?AspNetUserId=@user.AspNetUserId" onclick="javascript: return confirm('Are you sure you want to delete this User?')"><div class="glyph-icon simple-icon-trash text-danger h5"></div></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+
+}

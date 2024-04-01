@@ -1,0 +1,113 @@
+﻿@page
+@model App.UI.Pages.Users.EditModel
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>Create New User</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item">
+                            <a href="#">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#">Users</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Add New User</li>
+                    </ol>
+                </nav>
+                <div class="separator mb-5"></div>
+            </div>
+
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="exampleForm" class="tooltip-right-bottom" method="post">
+                            <div class="row">
+                                <input type="hidden" asp-for="EditUserCommand.AspNetUserId" />
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group has-top-label">
+                                        <label>First Name</label>
+                                        <input type="text" class="form-control"
+                                               asp-for="EditUserCommand.FirstName" />
+                                        <span asp-validation-for="EditUserCommand.FirstName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group has-top-label">
+                                        <label>Last Name</label>
+                                        <input type="text" class="form-control"
+                                               asp-for="EditUserCommand.LastName" />
+                                        <span asp-validation-for="EditUserCommand.LastName" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group has-top-label">
+                                        <label>Email</label>
+                                        <input type="email" class="form-control"
+                                               asp-for="EditUserCommand.Email" />
+                                        <span asp-validation-for="EditUserCommand.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group has-top-label">
+                                        <label>Password</label>
+                                        <input type="password" class="form-control"
+                                               asp-for="EditUserCommand.Password" />
+
+                                    </div>
+                                </div>
+                                <!-- Inside the form -->
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label>Roles</label>
+                                        <div class="d-flex align-items-center">
+                                            @foreach (var role in Model.Roles)
+                                            {
+                                                var isChecked = @Model.EditUserCommand.Roles.Contains(role.Role);
+
+                                                <div class="form-check mr-4">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           id="role_@role.Role" name="EditUserCommand.Roles"
+                                                           value="@role.Role" checked="@(isChecked ? true : false)">
+                                                    <label class="form-check-label" for="role_@role.Role">
+                                                        @role.Role
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                        <span asp-validation-for="EditUserCommand.Roles" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-4 align-self-center">
+                                    <div class="form-group has-top-label">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input"
+                                                   asp-for="EditUserCommand.Active" />
+                                            <label class="form-check-label">Active</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary mb-0">Submit</button>
+                                </div>
+                                <div>
+                                    <div class="danger" asp-validation-summary="All"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+@section Scripts {
+    <script src="/js/vendor/select2.full.js"></script>
+    <script src="/js/vendor/bootstrap-datepicker.js"></script>
+    <script src="/js/vendor/bootstrap-tagsinput.min.js"></script>
+}

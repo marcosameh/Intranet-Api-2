@@ -1,0 +1,25 @@
+﻿@page
+@model ErrorModel
+@{
+	ViewData["Title"] = "Error";
+}
+<main>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<h1>Error</h1>
+				<nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+					<ol class="breadcrumb pt-0">
+						<li class="breadcrumb-item">
+							<a href="/">Home</a>
+						</li>
+					</ol>
+				</nav>
+				<div class="separator mb-5"></div>
+			</div>
+			<h2 class="text-danger">An error occurred while processing your request.</h2>
+			<h3>@Model.ErrorStatusCode</h3>
+
+		</div>
+	</div>
+</main>
